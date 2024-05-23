@@ -7,7 +7,8 @@ def create_connection():
             host='93.176.248.32',
             port=3306,
             user='admin',
-            password='A8ElocM87B7Ijf5e'
+            password='A8ElocM87B7Ijf5e',
+            database = 'SensorDataCollector'
         )
         if connection.is_connected():
             print("Połączono z bazą danych")
@@ -21,12 +22,26 @@ def close_connection(connection):
         connection.close()
         print("Połączenie z bazą danych zostało zamknięte")
 
+
+def read_data(connection):
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM Data")
+        rows = cursor.fetchall()
+        print("Dane w tabeli Data:")
+        for row in rows:
+            print(row)
+    except Error as e:
+        print(f"Błąd podczas wykonywania zapytania: {e}")
+
 def main():
     connection = create_connection()
     if connection:
         # Tutaj możesz wykonać operacje na bazie danych
         # Na przykład odczytanie danych z bazy
         try:
+            read_data(connection)
+
             cursor = connection.cursor()
             cursor.execute("SHOW DATABASES")
             databases = cursor.fetchall()
@@ -35,6 +50,8 @@ def main():
                 print(db)
         except Error as e:
             print(f"Błąd podczas wykonywania zapytania: {e}")
+
+
 
         # Zamknięcie połączenia
         close_connection(connection)
